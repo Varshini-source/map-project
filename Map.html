@@ -16,7 +16,7 @@
 
       try {
         //  CALL YOUR GOOGLE SCRIPT
-        const response = await fetch("YOUR_SCRIPT_URL?blood=" + blood);
+        const response = await fetch("https://varshini-source.github.io/map-project/Map.html?blood=" + blood);
         const data = await response.json();
 
         const lat = data.latitude;

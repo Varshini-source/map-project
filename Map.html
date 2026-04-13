@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open Map</title>
+  <script>
+    function openMap() {
+      // Default coordinates
+      var lat = localStorage.getItem("lat");
+      var lon = localStorage.getItem("lon");
+
+      if (lat && lon) {
+        window.location.href = "https://www.google.com/maps?q=" + lat + "," + lon;
+      } else {
+        alert("No location found");
+      }
+    }
+  </script>
+</head>
+<body onload="openMap()">
+  <h2>Opening Google Maps...</h2>
+</body>
+</html>

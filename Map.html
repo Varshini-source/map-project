@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>Smart Map</title>
+
   <script>
     async function openMap() {
 
       // Get blood group from URL
       const params = new URLSearchParams(window.location.search);
-      const blood = params.get("blood");
+      let blood = params.get("blood");
 
       if (!blood) {
         document.body.innerHTML = "<h3>No blood group received</h3>";
@@ -15,25 +16,46 @@
       }
 
       try {
-        //  CALL YOUR GOOGLE SCRIPT
-      const response = await fetch("https://script.google.com/macros/s/AKfycbyIlMIhVBVrCKfI-PEnr3aVndhDDBD_VkYvI-oxy3Vq2SAYEBzHlSc04Ngt15mwVCVX/exec?blood=" + blood);
-        const data = await response.json();
+
+        // FIX: decode URL (important for O+, A+, etc.)
+        blood = decodeURIComponent(blood);
+
+        const url =
+          "https://script.google.com/macros/s/AKfycbyIlMIhVBVrCKfI-PEnr3aVndhDDBD_VkYvI-oxy3Vq2SAYEBzHlSc04Ngt15mwVCVX/exec?blood=" +
+          blood;
+
+        console.log("Calling:", url);
+
+        // FIX: use text() instead of json()
+        const response = await fetch(url, { redirect: "follow" });
+        const text = await response.text();
+
+        console.log("RAW RESPONSE:", text);
+
+        const data = JSON.parse(text);
 
         const lat = data.latitude;
         const lon = data.longitude;
 
         if (lat && lon) {
+
           // Redirect to Google Maps
-          window.location.href = "https://www.google.com/maps?q=" + lat + "," + lon;
+          window.location.href =
+            "https://www.google.com/maps?q=" + lat + "," + lon;
+
         } else {
           document.body.innerHTML = "<h3>No location found</h3>";
         }
 
       } catch (error) {
-        document.body.innerHTML = "<h3>Error fetching location</h3>";
+        console.log("ERROR:", error);
+
+        document.body.innerHTML =
+          "<h3>Error fetching location</h3><pre>" + error + "</pre>";
       }
     }
   </script>
+
 </head>
 
 <body onload="openMap()">

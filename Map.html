@@ -4,14 +4,15 @@
   <title>Open Map</title>
   <script>
     function openMap() {
-      // Default coordinates
-      var lat = localStorage.getItem("lat");
-      var lon = localStorage.getItem("lon");
+      // Read values from URL
+      const params = new URLSearchParams(window.location.search);
+      const lat = params.get("lat");
+      const lon = params.get("lon");
 
       if (lat && lon) {
         window.location.href = "https://www.google.com/maps?q=" + lat + "," + lon;
       } else {
-        alert("No location found");
+        document.body.innerHTML = "<h3>No location received</h3>";
       }
     }
   </script>

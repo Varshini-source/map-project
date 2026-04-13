@@ -1,23 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Map</title>
+  <title>Smart Map</title>
   <script>
-    function openMap() {
-      // Read values from URL
-      const params = new URLSearchParams(window.location.search);
-      const lat = params.get("lat");
-      const lon = params.get("lon");
+    async function openMap() {
 
-      if (lat && lon) {
-        window.location.href = "https://www.google.com/maps?q=" + lat + "," + lon;
-      } else {
-        document.body.innerHTML = "<h3>No location received</h3>";
+      // Get blood group from URL
+      const params = new URLSearchParams(window.location.search);
+      const blood = params.get("blood");
+
+      if (!blood) {
+        document.body.innerHTML = "<h3>No blood group received</h3>";
+        return;
+      }
+
+      try {
+        //  CALL YOUR GOOGLE SCRIPT
+        const response = await fetch("YOUR_SCRIPT_URL?blood=" + blood);
+        const data = await response.json();
+
+        const lat = data.latitude;
+        const lon = data.longitude;
+
+        if (lat && lon) {
+          // Redirect to Google Maps
+          window.location.href = "https://www.google.com/maps?q=" + lat + "," + lon;
+        } else {
+          document.body.innerHTML = "<h3>No location found</h3>";
+        }
+
+      } catch (error) {
+        document.body.innerHTML = "<h3>Error fetching location</h3>";
       }
     }
   </script>
 </head>
+
 <body onload="openMap()">
-  <h2>Opening Google Maps...</h2>
+  <h2>Finding nearest hospital...</h2>
 </body>
 </html>
